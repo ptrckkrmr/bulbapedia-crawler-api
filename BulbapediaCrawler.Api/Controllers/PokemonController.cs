@@ -40,16 +40,6 @@ namespace BulbapediaCrawler.Api.Controllers
         }
 
         /// <summary>
-        /// Gets a list of all Pokemon references.
-        /// </summary>
-        /// <returns>All Pokemon references.</returns>
-        [HttpGet("references")]
-        public Task<IEnumerable<PokemonReference>> GetReferences()
-        {
-            return this.service.GetReferences();
-        }
-
-        /// <summary>
         /// Gets the Pokemon reference with the given id.
         /// </summary>
         /// <param name="id">The Pokemon id.</param>
@@ -58,6 +48,16 @@ namespace BulbapediaCrawler.Api.Controllers
         public Task<PokemonReference> Get(int id)
         {
             return this.service.GetReference(id);
+        }
+
+        /// <summary>
+        /// Gets a list of all Pokemon references.
+        /// </summary>
+        /// <returns>All Pokemon references.</returns>
+        [HttpGet("references")]
+        public Task<IEnumerable<PokemonReference>> GetReferences()
+        {
+            return this.service.GetReferences();
         }
 
         /// <summary>

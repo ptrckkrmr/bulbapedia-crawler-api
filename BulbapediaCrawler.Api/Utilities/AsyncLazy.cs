@@ -64,17 +64,17 @@ namespace BulbapediaCrawler.Api.Utilities
         /// <returns>A task that produces the value.</returns>
         public async Task<T> GetAsync(CancellationToken token)
         {
-            T value = this.value;
-            if (value == null)
+            T result = this.value;
+            if (result == null)
             {
                 await this.semafore.WaitAsync(token);
                 try
                 {
-                    value = this.value;
-                    if (value == null)
+                    result = this.value;
+                    if (result == null)
                     {
-                        value = await this.supplier(token);
-                        this.value = value;
+                        result = await this.supplier(token);
+                        this.value = result;
                     }
                 }
                 finally
@@ -84,7 +84,7 @@ namespace BulbapediaCrawler.Api.Utilities
             }
 
             token.ThrowIfCancellationRequested();
-            return value;
+            return result;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace BulbapediaCrawler.Api
     /// <summary>
     /// Main class of this ASP.NET Core stand-alone web application.
     /// </summary>
-    public class Program
+    public static class Program
     {
         /// <summary>
         /// Runs this web application.

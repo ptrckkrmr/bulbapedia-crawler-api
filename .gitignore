@@ -1,3 +1,4 @@
+.sonarqube/
 .vs/
 bin/
 obj/

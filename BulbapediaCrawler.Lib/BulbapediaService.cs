@@ -9,13 +9,12 @@ namespace BulbapediaCrawler
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using System.Xml.Linq;
     using AngleSharp;
     using AngleSharp.Dom;
     using BulbapediaCrawler.Model;
 
     /// <summary>
-    /// Provides operations to retrieve pages from Bulbapedia as <see cref="XDocument"/> instances.
+    /// Provides operations to retrieve pages from Bulbapedia as HTML documents.
     /// </summary>
     public class BulbapediaService
     {
@@ -98,8 +97,7 @@ namespace BulbapediaCrawler
 
             // This is the table on the left of the page with the general info of the Pokemon.
             IElement infoTable = document.QuerySelectorAll("table + table.roundy")
-                .Where(table => table.QuerySelector("table table > tbody > tr:first-child > td:first-child > big > big > b") != null)
-                .Single();
+                .Single(table => table.QuerySelector("table table > tbody > tr:first-child > td:first-child > big > big > b") != null);
 
             string catchRate = this.GetPokemonInfoPanelValue(infoTable, "Catch rate");
             string baseExpYield = this.GetPokemonInfoPanelValue(infoTable, "Base experience yield");
@@ -140,8 +138,7 @@ namespace BulbapediaCrawler
                 .Select(td => td.FirstChild as IText)
                 .Where(textNode => textNode != null)
                 .Select(textNode => textNode.Data.Trim())
-                .Where(textNode => !textNode.StartsWith("unknown", StringComparison.InvariantCultureIgnoreCase))
-                .FirstOrDefault();
+                .FirstOrDefault(textNode => !textNode.StartsWith("unknown", StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
