@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulbapediaCrawler.Api", "BulbapediaCrawler.Api\BulbapediaCrawler.Api.csproj", "{B6013D22-78C0-4ADD-83B4-9CFDC4D2E8E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulbapediaCrawler.Lib", "BulbapediaCrawler.Lib\BulbapediaCrawler.Lib.csproj", "{107B28E1-1866-42D2-BAC5-5D2890D48F62}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B6013D22-78C0-4ADD-83B4-9CFDC4D2E8E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6013D22-78C0-4ADD-83B4-9CFDC4D2E8E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6013D22-78C0-4ADD-83B4-9CFDC4D2E8E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6013D22-78C0-4ADD-83B4-9CFDC4D2E8E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{107B28E1-1866-42D2-BAC5-5D2890D48F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{107B28E1-1866-42D2-BAC5-5D2890D48F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{107B28E1-1866-42D2-BAC5-5D2890D48F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{107B28E1-1866-42D2-BAC5-5D2890D48F62}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B2BAC4A-7ED4-46E2-9566-B04C054392A1}
+	EndGlobalSection
+EndGlobal
