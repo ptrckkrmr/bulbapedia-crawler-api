@@ -4,6 +4,8 @@
 
 namespace BulbapediaCrawler.Model
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Detailed information about a Pokemon.
     /// </summary>
@@ -13,6 +15,14 @@ namespace BulbapediaCrawler.Model
         /// Gets or sets the Pokemon's short description as stated on Bulbapedia.
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the types of this Pokemon.
+        /// </summary>
+        /// <remarks>
+        /// A Pokemon typically has either one or two types.
+        /// </remarks>
+        public IEnumerable<string> Types { get; set; }
 
         /// <summary>
         /// Gets or sets the catch rate of this Pokemon.

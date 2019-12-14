@@ -107,19 +107,20 @@ namespace BulbapediaCrawler
             string baseFriendship = this.GetPokemonInfoPanelValue(infoTable, "Base friendship");
 
             int[] hatchTime = hatchTimeDescription == null
-                ? new[] { 0, 0 }
-                : hatchTimeDescription.Split('-').Select(s => Convert.ToInt32(s.Trim())).ToArray();
+                ? new[] { 0 }
+                : hatchTimeDescription.Split('-').Select(s => this.TryParseInt32(s, 0)).ToArray();
 
             return new PokemonDetails
             {
                 Number = reference.Number,
                 Name = reference.Name,
                 Description = description,
-                CatchRate = catchRate == null ? -1 : Convert.ToInt32(catchRate),
-                BaseExperienceYield = baseExpYield == null ? -1 : Convert.ToInt32(baseExpYield),
+                Types = this.GetTypes(infoTable),
+                CatchRate = this.TryParseInt32(catchRate, 0),
+                BaseExperienceYield = this.TryParseInt32(baseExpYield, 0),
                 HatchTimeMin = hatchTime[0],
-                HatchTimeMax = hatchTime[1],
-                BaseFriendship = baseFriendship == null ? -1 : Convert.ToInt32(baseFriendship),
+                HatchTimeMax = hatchTime.Length > 1 ? hatchTime[1] : hatchTime[0],
+                BaseFriendship = this.TryParseInt32(baseFriendship, 0),
             };
         }
 
@@ -134,10 +135,49 @@ namespace BulbapediaCrawler
             return infoTable.QuerySelectorAll("td")
                 .Where(td => td.QuerySelector("b + table") != null)
                 .Where(td => td.QuerySelector("b").TextContent.Trim().Equals(name, StringComparison.InvariantCultureIgnoreCase))
-                .Select(td => td.QuerySelector("table td").FirstChild as IText)
+                .Take(1)
+                .SelectMany(td => td.QuerySelectorAll("table td"))
+                .Select(td => td.FirstChild as IText)
                 .Where(textNode => textNode != null)
                 .Select(textNode => textNode.Data.Trim())
+                .Where(textNode => !textNode.StartsWith("unknown", StringComparison.InvariantCultureIgnoreCase))
                 .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the types for the Pokemon from the given info table element.
+        /// </summary>
+        /// <param name="infoTable">The info table element.</param>
+        /// <returns>The types of the Pokemon.</returns>
+        private string[] GetTypes(IElement infoTable)
+        {
+            return infoTable.QuerySelector("tbody").Children
+                .Where(tr => tr.Children.Count() == 1)
+                .Select(tr => tr.Children[0])
+                .Where(td => td.Children[0].TextContent.Trim().StartsWith("type", StringComparison.InvariantCultureIgnoreCase))
+                .Take(1)
+                .SelectMany(typesCell => typesCell.QuerySelectorAll("table > tbody > tr > td:first-child > table > tbody > tr > td"))
+                .Select(typeCell => typeCell.TextContent.Trim())
+                .Where(type => !type.StartsWith("unknown", StringComparison.InvariantCultureIgnoreCase))
+                .Where(type => !type.Contains('\n'))
+                .ToArray();
+        }
+
+        private int TryParseInt32(string s, int defaultValue)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return defaultValue;
+            }
+
+            try
+            {
+                return Convert.ToInt32(s.Trim());
+            }
+            catch (FormatException)
+            {
+                return defaultValue;
+            }
         }
     }
 }
