@@ -1,5 +1,7 @@
 # Bulbapedia Crawler API
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ptrckkrmr_bulbapedia-crawler-api&metric=alert_status)](https://sonarcloud.io/dashboard?id=ptrckkrmr_bulbapedia-crawler-api)
+
 An HTTP API built on a crawler for Bulbapedia, built in ASP.NET Core.
 
 ## Requirements
