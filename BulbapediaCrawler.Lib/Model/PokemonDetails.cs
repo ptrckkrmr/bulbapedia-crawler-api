@@ -10,8 +10,33 @@ namespace BulbapediaCrawler.Model
     public class PokemonDetails : PokemonReference
     {
         /// <summary>
+        /// Gets or sets the Pokemon's short description as stated on Bulbapedia.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// Gets or sets the catch rate of this Pokemon.
         /// </summary>
         public int CatchRate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base experience yield of this Pokemon.
+        /// </summary>
+        public int BaseExperienceYield { get; set; }
+
+        /// <summary>
+        /// Gets or sets the minimum amount of steps needed to hatch this Pokemon.
+        /// </summary>
+        public int HatchTimeMin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum amount of steps needed to hatch this Pokemon.
+        /// </summary>
+        public int HatchTimeMax { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base friendship level for this Pokemon.
+        /// </summary>
+        public int BaseFriendship { get; set; }
     }
 }

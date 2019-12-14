@@ -50,6 +50,24 @@ namespace BulbapediaCrawler.Api.Services
         public Task<IEnumerable<PokemonReference>> GetReferences() => this.pokemonReferences.GetAsync();
 
         /// <summary>
+        /// Gets the details of the provided Pokemon.
+        /// </summary>
+        /// <param name="id">The Pokemon number.</param>
+        /// <returns>The details of the Pokemon, or null if the id is not valid.</returns>
+        public async Task<PokemonDetails> GetDetails(int id)
+        {
+            PokemonReference reference = await this.GetReference(id).ConfigureAwait(false);
+            if (reference == null)
+            {
+                return null;
+            }
+
+            // We currently do not cache Pokemon details. We probably should add this in the
+            // long term to improve performance and reduce the load on the Bulbapedia servers.
+            return await this.bulbapedia.GetDetails(reference).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Clears cached data from this service.
         /// </summary>
         /// <returns>The result of this asynchronous task.</returns>

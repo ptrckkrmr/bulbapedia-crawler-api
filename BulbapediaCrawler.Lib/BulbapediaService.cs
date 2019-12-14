@@ -75,29 +75,69 @@ namespace BulbapediaCrawler
                 .OrderBy(reference => reference.Number);
         }
 
+        /// <summary>
+        /// Gets detailed information about the provided Pokemon.
+        /// </summary>
+        /// <param name="reference">The Pokemon reference.</param>
+        /// <returns>The detailed information about the Pokemon.</returns>
         public async Task<PokemonDetails> GetDetails(PokemonReference reference)
         {
             IDocument document = await this.GetPage(reference.Name + "_(Pokémon)").ConfigureAwait(false);
+
+            // The layout of the body content is as follows:
+            // - Table with the top navigation bar (to navigate between Pokemon species)
+            // - Table with Pokemon information (right side panel)
+            // - One or more paragraph tags with the leading introduction of the Pokemon (this is what we want).
+            // - A div element that encapsulates the table of contents.
+            // Note that HTML tag names are always upper case (https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName)
+            string description = string.Join("\n", document.GetElementById("mw-content-text").Children
+                .SkipWhile(e => e.TagName == "TABLE")
+                .TakeWhile(e => e.TagName == "P")
+                .Select(e => e.TextContent.Trim())
+                .Where(line => !string.IsNullOrWhiteSpace(line)));
 
             // This is the table on the left of the page with the general info of the Pokemon.
             IElement infoTable = document.QuerySelectorAll("table + table.roundy")
                 .Where(table => table.QuerySelector("table table > tbody > tr:first-child > td:first-child > big > big > b") != null)
                 .Single();
 
-            int catchRate = infoTable.QuerySelectorAll("td")
-                .Where(td => td.QuerySelector("b + table") != null)
-                .Where(td => td.QuerySelector("b").TextContent == "Catch rate")
-                .Select(td => td.QuerySelector("table td").FirstChild as IText)
-                .Where(textNode => textNode != null)
-                .Select(textNode => Convert.ToInt32(textNode.Data.Trim()))
-                .FirstOrDefault();
+            string catchRate = this.GetPokemonInfoPanelValue(infoTable, "Catch rate");
+            string baseExpYield = this.GetPokemonInfoPanelValue(infoTable, "Base experience yield");
+            string hatchTimeDescription = this.GetPokemonInfoPanelValue(infoTable, "Hatch time");
+            string baseFriendship = this.GetPokemonInfoPanelValue(infoTable, "Base friendship");
+
+            int[] hatchTime = hatchTimeDescription == null
+                ? new[] { 0, 0 }
+                : hatchTimeDescription.Split('-').Select(s => Convert.ToInt32(s.Trim())).ToArray();
 
             return new PokemonDetails
             {
                 Number = reference.Number,
                 Name = reference.Name,
-                CatchRate = catchRate,
+                Description = description,
+                CatchRate = catchRate == null ? -1 : Convert.ToInt32(catchRate),
+                BaseExperienceYield = baseExpYield == null ? -1 : Convert.ToInt32(baseExpYield),
+                HatchTimeMin = hatchTime[0],
+                HatchTimeMax = hatchTime[1],
+                BaseFriendship = baseFriendship == null ? -1 : Convert.ToInt32(baseFriendship),
             };
+        }
+
+        /// <summary>
+        /// Gets a value from a Pokemon information panel.
+        /// </summary>
+        /// <param name="infoTable">The information table element to read from.</param>
+        /// <param name="name">The name of the value to retrieve, case-insensitive.</param>
+        /// <returns>The string value for the provided name, or null if no such value could be found.</returns>
+        private string GetPokemonInfoPanelValue(IElement infoTable, string name)
+        {
+            return infoTable.QuerySelectorAll("td")
+                .Where(td => td.QuerySelector("b + table") != null)
+                .Where(td => td.QuerySelector("b").TextContent.Trim().Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                .Select(td => td.QuerySelector("table td").FirstChild as IText)
+                .Where(textNode => textNode != null)
+                .Select(textNode => textNode.Data.Trim())
+                .FirstOrDefault();
         }
     }
 }

@@ -59,5 +59,16 @@ namespace BulbapediaCrawler.Api.Controllers
         {
             return this.service.GetReference(id);
         }
+
+        /// <summary>
+        /// Gets detailed information about the Pokemon with the given id.
+        /// </summary>
+        /// <param name="id">The Pokemon id.</param>
+        /// <returns>The detailed information for the Pokemon.</returns>
+        [HttpGet("{id}/details")]
+        public Task<PokemonDetails> GetPokemonDetails(int id)
+        {
+            return this.service.GetDetails(id);
+        }
     }
 }
